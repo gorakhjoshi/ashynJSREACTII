@@ -22,33 +22,13 @@ const renderCountry = function (data, className = '') {
   // countriesContainer.style.opacity = 1;
 };
 
-const renderError = function (msg) {
-  countriesContainer.insertAdjacentText('beforeend', msg);
-  // countriesContainer.style.opacity = 1;
+const getCountries = async function (country) {
+  const resCountry = await fetch(
+    `https://restcountries.eu/rest/v2/name/${country}`
+  );
+  const data = await resCountry.json();
+  console.log(data[0]);
+  renderCountry(data[0]);
 };
 
-const getCountryData = function (country) {
-  // Country 1
-  fetch(`https://restcountries.eu/rest/v2/name/${country}`)
-    .then(response => response.json())
-    .then(data => {
-      renderCountry(data[0]);
-      const neighbour = data[0].borders[0];
-
-      if (!neighbour) return;
-
-      // Country 2
-      return fetch(`https://restcountries.eu/rest/v2/alpha/${neighbour}`);
-    })
-    .then(response => response.json())
-    .then(data => renderCountry(data, 'neighbour'))
-    .catch(err => {
-      console.log(`${err} 🔥🔥🔥`);
-      renderError(`Something went wrong. 🎆🎆🎆 ${err.message}. Try again`);
-    })
-    .finally(() => (countriesContainer.style.opacity = 1));
-};
-
-btn.addEventListener('click', function () {
-  getCountryData('nepal');
-});
+getCountries('nepal');
